@@ -1,0 +1,2 @@
+# StuQDemo
+stuq courses demo
