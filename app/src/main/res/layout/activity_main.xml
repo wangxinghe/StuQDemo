@@ -24,4 +24,19 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:text="Canvas"/>
+
+    <Button
+        android:id="@+id/touch_event_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Touch Event Demo"/>
+
+    <Button
+        android:id="@+id/nest_scroll_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Nested Scroll Demo"/>
+
 </LinearLayout>
