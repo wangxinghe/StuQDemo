@@ -15,9 +15,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Button canvasBtn = (Button)findViewById(R.id.canvas_btn);
         Button touchEventBtn = (Button)findViewById(R.id.touch_event_btn);
+        Button slideMenuBtn = (Button)findViewById(R.id.slide_menu_btn);
         Button nestedScrollBtn = (Button)findViewById(R.id.nest_scroll_btn);
         canvasBtn.setOnClickListener(this);
         touchEventBtn.setOnClickListener(this);
+        slideMenuBtn.setOnClickListener(this);
         nestedScrollBtn.setOnClickListener(this);
     }
 
@@ -29,6 +31,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.touch_event_btn:
                 startActivity(new Intent(MainActivity.this, TouchEventActivity.class));
+                break;
+            case R.id.slide_menu_btn:
+                startActivity(new Intent(MainActivity.this, SlideMenuActivity.class));
                 break;
             case R.id.nest_scroll_btn:
                 startActivity(new Intent(MainActivity.this, NestedScrollActivity.class));

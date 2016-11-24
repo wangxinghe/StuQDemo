@@ -18,6 +18,7 @@
 
         <activity android:name=".CanvasActivity"/>
         <activity android:name=".TouchEventActivity"/>
+        <activity android:name=".SlideMenuActivity"/>
         <activity android:name=".NestedScrollActivity"/>
     </application>
 
