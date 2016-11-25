@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<com.mouxuejie.stuqdemo.touch.TouchViewA
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:background="#0000ff">
 
-</LinearLayout>
+    <com.mouxuejie.stuqdemo.touch.TouchViewB
+        android:layout_width="300dp"
+        android:layout_height="400dp"
+        android:gravity="center"
+        android:background="#00ff00">
+
+        <com.mouxuejie.stuqdemo.touch.TouchViewC
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#ff0000"/>
+
+        <com.mouxuejie.stuqdemo.touch.ButtonC
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginLeft="20dp"
+            android:text="button"/>
+
+    </com.mouxuejie.stuqdemo.touch.TouchViewB>
+</com.mouxuejie.stuqdemo.touch.TouchViewA>
