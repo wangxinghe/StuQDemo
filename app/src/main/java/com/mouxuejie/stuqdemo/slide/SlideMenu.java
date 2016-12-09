@@ -20,7 +20,7 @@ public class SlideMenu extends ViewGroup {
     private static final int SLIDE_MODE_SLOW = 1;
     private static final int SLIDE_MODE_SLOW_SCALE = 2;
 
-    private int mSlideMode = SLIDE_MODE_DEFAULT;
+    private int mSlideMode = SLIDE_MODE_SLOW;
 
     private ViewGroup mMenu;
     private ViewGroup mContent;
@@ -32,8 +32,6 @@ public class SlideMenu extends ViewGroup {
     private Scroller mScroller;
     private int mLastX;
     private int mLastY;
-    private int mLastXIntercept;
-    private int mLastYIntercept;
     private float scale;
     private boolean isOpen;
 
@@ -95,11 +93,13 @@ public class SlideMenu extends ViewGroup {
                 intercept = false;
                 break;
             case MotionEvent.ACTION_MOVE:
-                int deltaX = (int) ev.getX() - mLastXIntercept;
-                int deltaY = (int) ev.getY() - mLastYIntercept;
-                if (Math.abs(deltaX) > Math.abs(deltaY)){//横向滑动
+                int deltaX = (int) ev.getX() - mLastX;
+                int deltaY = (int) ev.getY() - mLastY;
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    //横向滑动
                     intercept = true;
-                }else{//纵向滑动
+                } else {
+                    //纵向滑动
                     intercept = false;
                 }
                 break;
@@ -109,8 +109,7 @@ public class SlideMenu extends ViewGroup {
         }
         mLastX = x;
         mLastY = y;
-        mLastXIntercept = x;
-        mLastYIntercept = y;
+
         return intercept;
     }
 
