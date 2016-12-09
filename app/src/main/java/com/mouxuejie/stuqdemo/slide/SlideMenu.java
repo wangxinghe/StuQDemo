@@ -3,6 +3,7 @@ package com.mouxuejie.stuqdemo.slide;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
@@ -14,6 +15,12 @@ import android.widget.Scroller;
  */
 
 public class SlideMenu extends ViewGroup {
+
+    private static final int SLIDE_MODE_DEFAULT = 0;
+    private static final int SLIDE_MODE_SLOW = 1;
+    private static final int SLIDE_MODE_SLOW_SCALE = 2;
+
+    private int mSlideMode = SLIDE_MODE_DEFAULT;
 
     private ViewGroup mMenu;
     private ViewGroup mContent;
@@ -83,7 +90,7 @@ public class SlideMenu extends ViewGroup {
         boolean intercept = false;
         int x = (int) ev.getX();
         int y = (int) ev.getY();
-        switch (ev.getAction()){
+        switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 intercept = false;
                 break;
@@ -118,55 +125,37 @@ public class SlideMenu extends ViewGroup {
             case MotionEvent.ACTION_MOVE:
                 int currentX = (int) event.getX();
                 int currentY = (int) event.getY();
-                //拿到x方向的偏移量
-                int dx = currentX - mLastX;
-                if (dx < 0){//向左滑动
-                    //边界控制，如果Menu已经完全显示，再滑动的话
-                    //Menu左侧就会出现白边了,进行边界控制
-                    if (getScrollX() + Math.abs(dx) >= 0) {
-                        //直接移动到（0，0）位置，不会出现白边
-                        scrollTo(0, 0);
-                        mMenu.setTranslationX(0);
-                    } else {//Menu没有完全显示呢
-                        //其实这里dx还是-dx，大家不用刻意去记
-                        //大家可以先使用dx，然后运行一下，发现
-                        //移动的方向是相反的，那么果断这里加个负号就可以了
-                        scrollBy(-dx, 0);
-                        slidingMode2();
-                    }
+                int deltaX = currentX - mLastX;
+                int scrollX = getScrollX() - deltaX;
 
-                }else{//向右滑动
-                    //边界控制，如果Content已经完全显示，再滑动的话
-                    //Content右侧就会出现白边了，进行边界控制
-                    if (getScrollX() - dx <= -mMenuWidth) {
-                        //直接移动到（-mMenuWidth,0）位置，不会出现白边
-                        scrollTo(-mMenuWidth, 0);
-                        mMenu.setTranslationX(0);
-                    } else {//Content没有完全显示呢
-                        //根据手指移动
-                        scrollBy(-dx, 0);
-                        slidingMode2();
-                    }
+                Log.i("SlideMenu", "ACTION_MOVE: getScrollX() " + getScrollX() + ", deltaX "+ deltaX + ", scrollX " + scrollX);
 
+                //scrollX范围 0至-mMenuWidth
+                if (scrollX >= 0) {
+                    //右边界处理
+                    scrollTo(0, 0);
+                } else if (scrollX <= -mMenuWidth) {
+                    //左边界处理
+                    scrollTo(-mMenuWidth, 0);
+                } else {
+                    //非边界情况
+                    scrollBy(-deltaX, 0);
+                    convertToSlideMode();
                 }
                 mLastX = currentX;
                 mLastY = currentY;
-                scale = Math.abs((float)getScrollX()) / (float) mMenuWidth;
                 break;
 
             case MotionEvent.ACTION_UP:
-                if (getScrollX() < -mMenuWidth / 2){//打开Menu
-                    //调用startScroll方法，第一个参数是起始X坐标，第二个参数
-                    //是起始Y坐标，第三个参数是X方向偏移量，第四个参数是Y方向偏移量
-                    mScroller.startScroll(getScrollX(), 0, -mMenuWidth - getScrollX(), 0, 300);
-                    //设置一个已经打开的标识，当实现点击开关自动打开关闭功能时会用到
+                if (getScrollX() < -mMenuWidth / 2) {
+                    // scrollX超过1/2滚动范围时,打开Menu
                     isOpen = true;
-                    //一定不要忘了调用这个方法重绘，否则没有动画效果
+                    mScroller.startScroll(getScrollX(), 0, -mMenuWidth - getScrollX(), 0, 300);
                     invalidate();
-                }else{//关闭Menu
-                    //同上
-                    mScroller.startScroll(getScrollX(), 0, -getScrollX(), 0, 300);
+                } else {
+                    //不足1/2时,关闭Menu
                     isOpen = false;
+                    mScroller.startScroll(getScrollX(), 0, -getScrollX(), 0, 300);
                     invalidate();
                 }
 
@@ -178,7 +167,7 @@ public class SlideMenu extends ViewGroup {
     /**
      * 将传进来的数转化为dp
      */
-    private int convertToDp(Context context , int num){
+    private int convertToDp(Context context , int num) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,num,context.getResources().getDisplayMetrics());
     }
 
@@ -186,26 +175,38 @@ public class SlideMenu extends ViewGroup {
     public void computeScroll() {
         if (mScroller.computeScrollOffset()){
             scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
-            scale = Math.abs((float)getScrollX()) / (float) mMenuWidth;
-            slidingMode2();
+            convertToSlideMode();
             invalidate();
         }
     }
 
-    private void slidingMode1(){
-
+    private void convertToSlideMode() {
+        switch (mSlideMode) {
+            case SLIDE_MODE_DEFAULT:
+                break;
+            case SLIDE_MODE_SLOW:
+                slowMode();
+                break;
+            case SLIDE_MODE_SLOW_SCALE:
+                slowScaleMode();
+                break;
+        }
     }
 
-    private void slidingMode2(){
+    private void slowMode() {
+        //Menu的translationX,从2/3 * mMenuWidth 到 0
         mMenu.setTranslationX(2*(mMenuWidth+getScrollX())/3);
     }
 
-    private void slidingMode3(){
+    private void slowScaleMode() {
+        scale = Math.abs((float)getScrollX()) / (float) mMenuWidth;
+        //Menu的translationX从1/2Menu到0,scale从0.7到1, alpha从0到1
         mMenu.setTranslationX(mMenuWidth + getScrollX() - (mMenuWidth/2)*(1.0f-scale));
         mMenu.setScaleX(0.7f + 0.3f*scale);
         mMenu.setScaleY(0.7f + 0.3f*scale);
         mMenu.setAlpha(scale);
 
+        //Content的scale从1到0.7
         mContent.setScaleX(1 - 0.3f*scale);
         mContent.setPivotX(0);
         mContent.setScaleY(1.0f - 0.3f * scale);

@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.mouxuejie.stuqdemo.scroll.AnimActivity;
+import com.mouxuejie.stuqdemo.scroll.SmoothScrollActivity;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     @Override
@@ -16,11 +19,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button canvasBtn = (Button)findViewById(R.id.canvas_btn);
         Button touchEventBtn = (Button)findViewById(R.id.touch_event_btn);
         Button slideMenuBtn = (Button)findViewById(R.id.slide_menu_btn);
-        Button nestedScrollBtn = (Button)findViewById(R.id.nest_scroll_btn);
+        Button scrollBtn = (Button)findViewById(R.id.scroll_btn);
+        Button smoothScrollBtn = (Button)findViewById(R.id.smooth_scroll_btn);
         canvasBtn.setOnClickListener(this);
         touchEventBtn.setOnClickListener(this);
         slideMenuBtn.setOnClickListener(this);
-        nestedScrollBtn.setOnClickListener(this);
+        scrollBtn.setOnClickListener(this);
+        smoothScrollBtn.setOnClickListener(this);
     }
 
     @Override
@@ -35,8 +40,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.slide_menu_btn:
                 startActivity(new Intent(MainActivity.this, SlideMenuActivity.class));
                 break;
-            case R.id.nest_scroll_btn:
-                startActivity(new Intent(MainActivity.this, NestedScrollActivity.class));
+            case R.id.scroll_btn:
+                startActivity(new Intent(MainActivity.this, AnimActivity.class));
+                break;
+            case R.id.smooth_scroll_btn:
+                startActivity(new Intent(MainActivity.this, SmoothScrollActivity.class));
                 break;
             default:
                 break;

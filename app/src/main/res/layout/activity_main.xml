@@ -40,10 +40,17 @@
         android:text="Slide Menu Demo"/>
 
     <Button
-        android:id="@+id/nest_scroll_btn"
+        android:id="@+id/scroll_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:text="Nested Scroll Demo"/>
+        android:text="Scroll Demo"/>
+
+    <Button
+        android:id="@+id/smooth_scroll_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Smooth Scroll Demo"/>
 
 </LinearLayout>
